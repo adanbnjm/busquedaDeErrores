@@ -12,8 +12,12 @@ export const obtenerProfesores = async (): Promise<Profesor[]> => {
   return result.rows;
 };
 
-export const obtenerProfesorPorId = async (id: number): Promise<Profesor | undefined> => {
-  const result = await pool.query("SELECT * FROM profesores WHERE id = $1", [id]);
+export const obtenerProfesorPorId = async (
+  id: number,
+): Promise<Profesor | undefined> => {
+  const result = await pool.query("SELECT * FROM profesores WHERE id = $1", [
+    id,
+  ]);
   return result.rows[0];
 };
 
@@ -23,15 +27,15 @@ export const crearProfesor = async (data: {
   telefono?: string;
 }): Promise<Profesor> => {
   const result = await pool.query(
-    "INSERT INTO profesores (nombre, email) VALUES ($1, $2) RETURNING *",
-    [data.nombre, data.email, data.telefono ?? null]
+    "INSERT INTO profesores (nombre, email, telefono) VALUES ($1, $2, $3) RETURNING *",
+    [data.nombre, data.email, data.telefono ?? null],
   );
   return result.rows[0];
 };
 
 export const actualizarProfesor = async (
   id: number,
-  data: Partial<{ nombre: string; email: string; telefono: string }>
+  data: Partial<{ nombre: string; email: string; telefono: string }>,
 ): Promise<Profesor | undefined> => {
   const actual = await obtenerProfesorPorId(id);
   if (!actual) return undefined;
@@ -42,7 +46,7 @@ export const actualizarProfesor = async (
 
   const result = await pool.query(
     "UPDATE profesores SET nombre = $1, email = $2, telefono = $3 WHERE id = $4 RETURNING *",
-    [nombre, email, telefono, id]
+    [nombre, email, telefono, id],
   );
   return result.rows[0];
 };
