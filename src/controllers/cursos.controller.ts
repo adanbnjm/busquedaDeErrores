@@ -24,7 +24,7 @@ cursosRouter.get("/:id", async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const curso = await obtenerCursoPorId(id);
-    if (curso) {
+    if (!curso) {
       res.status(404).json({ error: "Curso no encontrado" });
       return;
     }
